@@ -26,6 +26,7 @@ abstract class FeatureTestCase extends TestCase
 
     protected function defineDatabaseMigrations()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
+        // we are using default user migration to store fixtures
+        $this->loadLaravelMigrations();
     }
 }

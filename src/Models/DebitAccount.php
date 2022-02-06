@@ -2,7 +2,9 @@
 
 namespace GloCurrency\AccessBank\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use GloCurrency\AccessBank\Database\Factories\DebitAccountFactory;
 use BrokeYourBike\BaseModels\BaseUuid;
 
 /**
@@ -20,6 +22,17 @@ use BrokeYourBike\BaseModels\BaseUuid;
 class DebitAccount extends BaseUuid
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'access_debit_accounts';
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return DebitAccountFactory::new();
+    }
 }

@@ -80,11 +80,11 @@ class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncry
             throw CreateTransactionException::stateNotAllowed($transaction);
         }
 
-        /** @var Transaction|null $accessTransaction */
-        $accessTransaction = Transaction::firstWhere('transaction_id', $transaction->getId());
+        /** @var Transaction|null $targetTransaction */
+        $targetTransaction = Transaction::firstWhere('transaction_id', $transaction->getId());
 
-        if ($accessTransaction) {
-            throw CreateTransactionException::duplicateTargetTransaction($accessTransaction);
+        if ($targetTransaction) {
+            throw CreateTransactionException::duplicateTargetTransaction($targetTransaction);
         }
 
         $transactionSender = $transaction->getSender();
@@ -109,13 +109,13 @@ class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncry
 
         /** @var DebitAccount|null $debitAccount */
         $debitAccount = DebitAccount::firstWhere([
-            'country_code' => $transactionRecipient->country_code,
+            'country_code' => $transactionRecipient->getCountryCode(),
             'currency_code' => $transaction->getOutputAmount()->getCurrency()->getCode(),
         ]);
 
         if (!$debitAccount) {
             throw CreateTransactionException::noTargetDebitAccount(
-                $transactionRecipient->country_code,
+                $transactionRecipient->getCountryCode(),
                 $transaction->getOutputAmount()->getCurrency()->getCode(),
             );
         }

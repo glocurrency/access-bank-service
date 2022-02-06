@@ -2,11 +2,13 @@
 
 namespace GloCurrency\AccessBank\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use GloCurrency\MiddlewareBlocks\Contracts\ModelWithStateCodeInterface as MModelWithStateCodeInterface;
 use GloCurrency\AccessBank\Events\TransactionUpdatedEvent;
 use GloCurrency\AccessBank\Events\TransactionCreatedEvent;
 use GloCurrency\AccessBank\Enums\TransactionStateCodeEnum;
+use GloCurrency\AccessBank\Database\Factories\TransactionFactory;
 use GloCurrency\AccessBank\AccessBank;
 use BrokeYourBike\HasSourceModel\SourceModelInterface;
 use BrokeYourBike\BaseModels\BaseUuid;
@@ -41,6 +43,7 @@ use BrokeYourBike\AccessBank\Enums\ErrorCodeEnum;
 class Transaction extends BaseUuid implements MModelWithStateCodeInterface, SourceModelInterface, BankTransactionInterface
 {
     use HasFactory;
+    use SoftDeletes;
 
     protected $table = 'access_transactions';
 
@@ -122,5 +125,15 @@ class Transaction extends BaseUuid implements MModelWithStateCodeInterface, Sour
     public function processingItem()
     {
         return $this->belongsTo(AccessBank::$processingItemModel, 'processing_item_id', 'id');
+    }
+
+    /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        return TransactionFactory::new();
     }
 }
