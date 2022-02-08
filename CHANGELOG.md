@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.1.1](https://www.github.com/glocurrency/access-bank-service/compare/v0.1.0...v0.1.1) (2022-02-08)
+
+
+### Bug Fixes
+
+* use new `glocurrency/middleware-blocks` ([046f44c](https://www.github.com/glocurrency/access-bank-service/commit/046f44c45c3d74ac4a1548e74f99a90f8defdafe))
+
 ## 0.1.0 (2022-02-06)
 
 
