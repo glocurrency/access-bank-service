@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.1.3](https://www.github.com/glocurrency/access-bank-service/compare/v0.1.2...v0.1.3) (2023-02-07)
+
+
+### Bug Fixes
+
+* do not use private packagist ([1ea8c8f](https://www.github.com/glocurrency/access-bank-service/commit/1ea8c8f915cef8699036144719c29d0fe7d2c057))
+
 ### [0.1.2](https://www.github.com/glocurrency/access-bank-service/compare/v0.1.1...v0.1.2) (2022-11-24)
 
 
