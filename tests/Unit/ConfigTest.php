@@ -39,12 +39,12 @@ class ConfigTest extends TestCase
     /** @test */
     public function it_can_return_values()
     {
-        $url = $this->faker->url;
-        $authUrl = $this->faker->url;
-        $appId = $this->faker->uuid;
-        $clientId = $this->faker->uuid;
+        $url = $this->faker->url();
+        $authUrl = $this->faker->url();
+        $appId = $this->faker->uuid();
+        $clientId = $this->faker->uuid();
         $clientSecret = $this->faker->password();
-        $resourceId = $this->faker->uuid;
+        $resourceId = $this->faker->uuid();
         $subscriptionKey = $this->faker->password();
 
         $configPrefix = 'services.access_bank.api';
