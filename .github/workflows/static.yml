@@ -27,8 +27,6 @@ jobs:
           tools: composer
 
       - name: Download dependencies
-        env:
-          COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
         run: composer update --no-interaction --no-progress
 
       - name: Download PHPStan
