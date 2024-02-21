@@ -132,6 +132,8 @@ class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncry
             'debit_account' => $debitAccount->account_number,
             'recipient_account' => $transactionRecipient->getBankAccount(),
             'recipient_name' => $transactionRecipient->getName(),
+            'sender_country_code' => $transactionSender->getCountryCode(),
+            'sender_name' => $transactionSender->getName(),
             'currency_code' => $transaction->getOutputAmount()->getCurrency()->getCode(),
             'amount' => $moneyFormatter->format($transaction->getOutputAmount()),
         ]);

@@ -30,6 +30,8 @@ class CreateAccessTransactionsTable extends Migration
             $table->string('debit_account');
             $table->string('recipient_account');
             $table->string('recipient_name');
+            $table->char('sender_country_code', 3);
+            $table->string('sender_name');
             $table->string('bank_code');
             $table->char('currency_code', 3);
             $table->double('amount');

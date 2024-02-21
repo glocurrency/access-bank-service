@@ -11,6 +11,7 @@ use GloCurrency\AccessBank\Enums\TransactionStateCodeEnum;
 use GloCurrency\AccessBank\Database\Factories\TransactionFactory;
 use GloCurrency\AccessBank\AccessBank;
 use BrokeYourBike\HasSourceModel\SourceModelInterface;
+use BrokeYourBike\CountryCasts\Alpha2Cast;
 use BrokeYourBike\BaseModels\BaseUuid;
 use BrokeYourBike\AccessBank\Interfaces\BankTransactionInterface;
 use BrokeYourBike\AccessBank\Enums\StatusCodeEnum;
@@ -32,6 +33,9 @@ use BrokeYourBike\AccessBank\Enums\ErrorCodeEnum;
  * @property string $debit_account
  * @property string $recipient_account
  * @property string $recipient_name
+ * @property string $sender_country_code
+ * @property string $sender_country_code_alpha2
+ * @property string $sender_name
  * @property string $bank_code
  * @property string $currency_code
  * @property float $amount
@@ -56,6 +60,7 @@ class Transaction extends BaseUuid implements MModelWithStateCodeInterface, Sour
         'state_code' => TransactionStateCodeEnum::class,
         'error_code' => ErrorCodeEnum::class,
         'status_code' => StatusCodeEnum::class,
+        'sender_country_code_alpha2' => Alpha2Cast::class . ':sender_country_code',
         'amount' => 'double',
     ];
 
@@ -105,6 +110,16 @@ class Transaction extends BaseUuid implements MModelWithStateCodeInterface, Sour
     public function getRecipientName(): string
     {
         return $this->recipient_name;
+    }
+
+    public function getSenderCountry(): string
+    {
+        return $this->sender_country_code_alpha2;
+    }
+
+    public function getSenderName(): string
+    {
+        return $this->sender_name;
     }
 
     public function getBankCode(): string

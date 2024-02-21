@@ -31,14 +31,14 @@ jobs:
       run: vendor/bin/phpunit --coverage-clover=coverage.xml
 
     - name: Upload coverage to codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       continue-on-error: true
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         files: ./coverage.xml
 
     - name: Upload coverage to codeclimate
-      uses: paambaati/codeclimate-action@v4
+      uses: paambaati/codeclimate-action@v5
       continue-on-error: true
       env:
         CC_TEST_REPORTER_ID: ${{ secrets.CODECLIMATE_TOKEN }}

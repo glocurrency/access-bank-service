@@ -70,7 +70,12 @@ class SendTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypt
         try {
             /** @var Client */
             $api = App::make(Client::class);
-            $response = $api->sendDomesticTransaction($this->targetTransaction);
+
+            if (in_array($this->targetTransaction->getBankCode(), ['044', '063'])) {
+                $response = $api->sendDomesticTransaction($this->targetTransaction);
+            } else {
+                $response = $api->sendOtherBankTransaction($this->targetTransaction);
+            }
         } catch (\Throwable $e) {
             report($e);
             throw SendTransactionException::apiRequestException($e);
