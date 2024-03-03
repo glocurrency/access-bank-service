@@ -84,6 +84,10 @@ class FetchTransactionUpdateJob implements ShouldQueue, ShouldBeUnique, ShouldBe
             throw FetchTransactionUpdateException::apiRequestException($e);
         }
 
+        if (!$response->errorCode || !$response->transactionStatus) {
+            return;
+        }
+
         $errorCode = ErrorCodeEnum::tryFrom($response->errorCode);
         if (ErrorCodeEnum::NO_ERROR === $errorCode) {
             $statusCode = StatusCodeEnum::tryFrom($response->transactionStatus);

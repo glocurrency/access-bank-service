@@ -94,7 +94,7 @@ class SendTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypt
         $this->targetTransaction->error_code = $errorCode;
         $this->targetTransaction->state_code = TransactionStateCodeEnum::makeFromErrorCode($errorCode);
 
-        if (ErrorCodeEnum::NO_ERROR === $errorCode) {
+        if (ErrorCodeEnum::NO_ERROR === $errorCode && $response->transactionStatus) {
             $statusCode = StatusCodeEnum::tryFrom($response->transactionStatus);
             if ($statusCode) {
                 $this->targetTransaction->status_code = $statusCode;
