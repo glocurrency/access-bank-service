@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.3.0](https://www.github.com/glocurrency/access-bank-service/compare/v0.2.0...v0.3.0) (2024-03-03)
+
+
+### Features
+
+* fetch update ([fcad40c](https://www.github.com/glocurrency/access-bank-service/commit/fcad40c1eb2992f5d3eb02b93d8d86d37bb4723b))
+
+
+### Bug Fixes
+
+* baseline ([c5caa43](https://www.github.com/glocurrency/access-bank-service/commit/c5caa439f02424f60a08f15d6dc78864f3d745e5))
+
 ## [0.2.0](https://www.github.com/glocurrency/access-bank-service/compare/v0.1.4...v0.2.0) (2024-02-21)
 
 
