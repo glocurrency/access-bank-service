@@ -3,6 +3,7 @@
 namespace GloCurrency\AccessBank;
 
 use Illuminate\Support\ServiceProvider;
+use GloCurrency\AccessBank\Console\FetchTransactionsUpdateCommand;
 use GloCurrency\AccessBank\Config;
 use BrokeYourBike\AccessBank\Interfaces\ConfigInterface;
 
@@ -79,6 +80,20 @@ class AccessBankServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations' => $this->app->databasePath('migrations'),
             ], 'access-bank-migrations');
+        }
+    }
+
+    /**
+     * Register the package's commands.
+     *
+     * @return void
+     */
+    protected function registerCommands()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                FetchTransactionsUpdateCommand::class,
+            ]);
         }
     }
 }

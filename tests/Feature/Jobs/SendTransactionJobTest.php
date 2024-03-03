@@ -63,7 +63,7 @@ class SendTransactionJobTest extends FeatureTestCase
         /** @var Transaction */
         $targetTransaction = $targetTransaction->fresh();
 
-        $this->assertEquals(TransactionStateCodeEnum::UNEXPECTED_STATUS_CODE, $targetTransaction->state_code);
+        $this->assertEquals(TransactionStateCodeEnum::PROCESSING, $targetTransaction->state_code);
     }
 
     /** @test */

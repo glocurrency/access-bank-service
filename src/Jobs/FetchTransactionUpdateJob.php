@@ -2,6 +2,7 @@
 
 namespace GloCurrency\AccessBank\Jobs;
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\App;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -13,12 +14,13 @@ use Illuminate\Bus\Queueable;
 use GloCurrency\MiddlewareBlocks\Enums\QueueTypeEnum as MQueueTypeEnum;
 use GloCurrency\AccessBank\Models\Transaction;
 use GloCurrency\AccessBank\Exceptions\SendTransactionException;
+use GloCurrency\AccessBank\Exceptions\FetchTransactionUpdateException;
 use GloCurrency\AccessBank\Enums\TransactionStateCodeEnum;
 use BrokeYourBike\AccessBank\Enums\StatusCodeEnum;
 use BrokeYourBike\AccessBank\Enums\ErrorCodeEnum;
 use BrokeYourBike\AccessBank\Client;
 
-class SendTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
+class FetchTransactionUpdateJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
 {
     use Dispatchable;
     use InteractsWithQueue;
@@ -63,47 +65,34 @@ class SendTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypt
      */
     public function handle()
     {
-        if (TransactionStateCodeEnum::LOCAL_UNPROCESSED !== $this->targetTransaction->getStateCode()) {
-            throw SendTransactionException::stateNotAllowed($this->targetTransaction);
+        if (TransactionStateCodeEnum::PROCESSING !== $this->targetTransaction->state_code) {
+            throw FetchTransactionUpdateException::stateNotAllowed($this->targetTransaction);
         }
 
         try {
             /** @var Client */
-            $api = App::make(Client::class);
+            $api = App::makeWith(Client::class);
+
 
             if (in_array($this->targetTransaction->getBankCode(), ['044', '063'])) {
-                $response = $api->sendDomesticTransaction($this->targetTransaction);
+                $response = $api->fetchDomesticTransactionStatus((string) Str::uuid(), $this->targetTransaction->getReference());
             } else {
-                $response = $api->sendOtherBankTransaction($this->targetTransaction);
+                $response = $api->fetchOtheBankTransactionStatus((string) Str::uuid(), $this->targetTransaction->getReference());
             }
         } catch (\Throwable $e) {
             report($e);
-            throw SendTransactionException::apiRequestException($e);
-        }
-
-        if ($response->errorCode === null) {
-            throw SendTransactionException::noErrorCode($response);
+            throw FetchTransactionUpdateException::apiRequestException($e);
         }
 
         $errorCode = ErrorCodeEnum::tryFrom($response->errorCode);
-
-        if (!$errorCode) {
-            throw SendTransactionException::unexpectedErrorCode($response->errorCode);
-        }
-
-        $this->targetTransaction->error_code = $errorCode;
-        $this->targetTransaction->state_code = TransactionStateCodeEnum::makeFromErrorCode($errorCode);
-
         if (ErrorCodeEnum::NO_ERROR === $errorCode) {
             $statusCode = StatusCodeEnum::tryFrom($response->transactionStatus);
             if ($statusCode) {
-                $this->targetTransaction->status_code = $statusCode;
-                $this->targetTransaction->status_code_description = $response->transactionInformation;
                 $this->targetTransaction->state_code = TransactionStateCodeEnum::makeFromStatusCode($statusCode);
+                $this->targetTransaction->state_code_reason = $response->transactionInformation;
             }
+            $this->targetTransaction->save();
         }
-
-        $this->targetTransaction->save();
     }
 
     /**
@@ -115,18 +104,5 @@ class SendTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypt
     public function failed(\Throwable $exception)
     {
         report($exception);
-
-        if ($exception instanceof SendTransactionException) {
-            $this->targetTransaction->update([
-                'state_code' => $exception->getStateCode(),
-                'state_code_reason' => $exception->getStateCodeReason(),
-            ]);
-            return;
-        }
-
-        $this->targetTransaction->update([
-            'state_code' => TransactionStateCodeEnum::LOCAL_EXCEPTION,
-            'state_code_reason' => $exception->getMessage(),
-        ]);
     }
 }

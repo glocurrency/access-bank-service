@@ -9,7 +9,7 @@ use BrokeYourBike\AccessBank\Enums\StatusCodeEnum;
 use BrokeYourBike\AccessBank\Enums\ErrorCodeEnum;
 use BrokeYourBike\AccessBank\Client;
 
-final class SendTransactionException extends \RuntimeException
+final class FetchTransactionUpdateException extends \RuntimeException
 {
     private TransactionStateCodeEnum $stateCode;
     private string $stateCodeReason;
@@ -58,5 +58,19 @@ final class SendTransactionException extends \RuntimeException
         $className = ErrorCodeEnum::class;
         $message = "Unexpected {$className}: `{$code}`";
         return new static(TransactionStateCodeEnum::UNEXPECTED_ERROR_CODE, $message);
+    }
+
+    public static function noStatusCode(TransactionResponse $response): self
+    {
+        $className = $response::class;
+        $message = "{$className} do not have `payment.status` property: `{$response->getRawResponse()->getBody()}`";
+        return new static(TransactionStateCodeEnum::NO_STATUS_CODE_PROPERTY, $message);
+    }
+
+    public static function unexpectedStatusCode(string $code): self
+    {
+        $className = StatusCodeEnum::class;
+        $message = "Unexpected {$className}: `{$code}`";
+        return new static(TransactionStateCodeEnum::UNEXPECTED_STATUS_CODE, $message);
     }
 }
