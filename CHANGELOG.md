@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.3.2](https://www.github.com/glocurrency/access-bank-service/compare/v0.3.1...v0.3.2) (2024-03-31)
+
+
+### Bug Fixes
+
+* register commands ([7baf572](https://www.github.com/glocurrency/access-bank-service/commit/7baf572f8e9e3584c36bd43e9718eff50a655dea))
+
 ### [0.3.1](https://www.github.com/glocurrency/access-bank-service/compare/v0.3.0...v0.3.1) (2024-03-05)
 
 
