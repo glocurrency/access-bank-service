@@ -150,7 +150,7 @@ class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncry
             'processing_item_id' => $this->processingItem->getId(),
             'state_code' => TransactionStateCodeEnum::LOCAL_UNPROCESSED,
             'reference' => $transaction->getReferenceForHumans(),
-            'bank_code' => $bank->codename,
+            'bank_code' => $bank->domestic ? '' : $bank->codename,
             'debit_account' => $debitAccount->account_number,
             'recipient_account' => $transactionRecipient->getBankAccount(),
             'recipient_name' => $transactionRecipient->getName(),

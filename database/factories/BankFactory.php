@@ -26,6 +26,7 @@ class BankFactory extends Factory
             'id' => $this->faker->uuid(),
             'bank_id' => (AccessBank::$bankModel)::factory(),
             'codename' => $this->faker->word(),
+            'domestic' => false,
         ];
     }
 }

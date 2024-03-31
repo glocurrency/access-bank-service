@@ -17,6 +17,7 @@ class CreateAccessBanksTable extends Migration
             $table->uuid('id')->primary();
             $table->uuid('bank_id')->unique()->index();
             $table->string('codename');
+            $table->boolean('domestic');
             $table->timestamps(6);
         });
     }

@@ -12,6 +12,7 @@ use BrokeYourBike\BaseModels\BaseUuid;
  * @property string $id
  * @property string $bank_id
  * @property string $codename
+ * @property bool $domestic
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  */
@@ -20,6 +21,15 @@ class Bank extends BaseUuid
     use HasFactory;
 
     protected $table = 'access_banks';
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array<mixed>
+     */
+    protected $casts = [
+        'domestic' => 'boolean',
+    ];
 
     /**
      * Create a new factory instance for the model.
