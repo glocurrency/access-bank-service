@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
@@ -18,8 +19,10 @@ use GloCurrency\MiddlewareBlocks\Enums\ProcessingItemStateCodeEnum as MProcessin
 use GloCurrency\MiddlewareBlocks\Contracts\ProcessingItemInterface as MProcessingItemInterface;
 use GloCurrency\AccessBank\Models\Transaction;
 use GloCurrency\AccessBank\Models\DebitAccount;
+use GloCurrency\AccessBank\Models\Bank;
 use GloCurrency\AccessBank\Exceptions\CreateTransactionException;
 use GloCurrency\AccessBank\Enums\TransactionStateCodeEnum;
+use GloCurrency\AccessBank\AccessBank;
 
 class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncrypted
 {
@@ -120,6 +123,25 @@ class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncry
             );
         }
 
+        $destinationBank = (AccessBank::$bankModel)::firstWhere([
+            'country_code' => $transactionRecipient->getCountryCode(),
+            'code' => $transactionRecipient->getBankCode(),
+        ]);
+
+        if (!$destinationBank instanceof Model) {
+            throw CreateTransactionException::noDestinationBank(
+                $transactionRecipient->getCountryCode(),
+                $transactionRecipient->getBankCode()
+            );
+        }
+
+        /** @var Bank|null $bank */
+        $bank = Bank::firstWhere('bank_id', $destinationBank->getKey());
+
+        if (!$bank) {
+            throw CreateTransactionException::noTargetBank($destinationBank);
+        }
+
         /** @var DecimalMoneyFormatter $moneyFormatter */
         $moneyFormatter = App::make(DecimalMoneyFormatter::class);
 
@@ -128,7 +150,7 @@ class CreateTransactionJob implements ShouldQueue, ShouldBeUnique, ShouldBeEncry
             'processing_item_id' => $this->processingItem->getId(),
             'state_code' => TransactionStateCodeEnum::LOCAL_UNPROCESSED,
             'reference' => $transaction->getReferenceForHumans(),
-            'bank_code' => "000{$transactionRecipient->getBankCode()}",
+            'bank_code' => $bank->codename,
             'debit_account' => $debitAccount->account_number,
             'recipient_account' => $transactionRecipient->getBankAccount(),
             'recipient_name' => $transactionRecipient->getName(),

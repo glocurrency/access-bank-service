@@ -5,6 +5,7 @@ namespace GloCurrency\AccessBank\Tests;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use GloCurrency\AccessBank\Tests\Fixtures\TransactionFixture;
 use GloCurrency\AccessBank\Tests\Fixtures\ProcessingItemFixture;
+use GloCurrency\AccessBank\Tests\Fixtures\BankFixture;
 use GloCurrency\AccessBank\AccessBankServiceProvider;
 use GloCurrency\AccessBank\AccessBank;
 
@@ -14,6 +15,7 @@ abstract class TestCase extends OrchestraTestCase
     {
         AccessBank::useTransactionModel(TransactionFixture::class);
         AccessBank::useProcessingItemModel(ProcessingItemFixture::class);
+        AccessBank::useBankModel(BankFixture::class);
     }
 
     protected function getPackageProviders($app)

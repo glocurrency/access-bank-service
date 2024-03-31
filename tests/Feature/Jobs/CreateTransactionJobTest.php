@@ -11,9 +11,11 @@ use GloCurrency\MiddlewareBlocks\Contracts\TransactionInterface as MTransactionI
 use GloCurrency\MiddlewareBlocks\Contracts\SenderInterface as MSenderInterface;
 use GloCurrency\MiddlewareBlocks\Contracts\RecipientInterface as MRecipientInterface;
 use GloCurrency\MiddlewareBlocks\Contracts\ProcessingItemInterface as MProcessingItemInterface;
+use GloCurrency\AccessBank\Tests\Fixtures\BankFixture;
 use GloCurrency\AccessBank\Tests\FeatureTestCase;
 use GloCurrency\AccessBank\Models\Transaction;
 use GloCurrency\AccessBank\Models\DebitAccount;
+use GloCurrency\AccessBank\Models\Bank;
 use GloCurrency\AccessBank\Jobs\CreateTransactionJob;
 use GloCurrency\AccessBank\Exceptions\CreateTransactionException;
 use GloCurrency\AccessBank\Events\TransactionUpdatedEvent;
@@ -221,6 +223,15 @@ class CreateTransactionJobTest extends FeatureTestCase
             'currency_code' => $transaction->getOutputAmount()->getCurrency()->getCode(),
         ]);
 
+        $mainBank = BankFixture::factory()->create([
+            'country_code' => $recipient->getCountryCode(),
+            'code' => $recipient->getBankCode(),
+        ]);
+
+        Bank::factory()->create([
+            'bank_id' => $mainBank->id,
+        ]);
+
         $this->assertNull(Transaction::first());
 
         try {
@@ -284,6 +295,15 @@ class CreateTransactionJobTest extends FeatureTestCase
         DebitAccount::factory()->create([
             'country_code' => $recipient->getCountryCode(),
             'currency_code' => $transaction->getOutputAmount()->getCurrency()->getCode(),
+        ]);
+
+        $mainBank = BankFixture::factory()->create([
+            'country_code' => $recipient->getCountryCode(),
+            'code' => $recipient->getBankCode(),
+        ]);
+
+        Bank::factory()->create([
+            'bank_id' => $mainBank->id,
         ]);
 
         $this->assertNull(Transaction::first());
@@ -350,6 +370,15 @@ class CreateTransactionJobTest extends FeatureTestCase
             'currency_code' => $transaction->getOutputAmount()->getCurrency()->getCode(),
         ]);
 
+        $mainBank = BankFixture::factory()->create([
+            'country_code' => $recipient->getCountryCode(),
+            'code' => $recipient->getBankCode(),
+        ]);
+
+        Bank::factory()->create([
+            'bank_id' => $mainBank->id,
+        ]);
+
         $this->assertNull(Transaction::first());
 
         CreateTransactionJob::dispatchSync($processingItem);
@@ -360,6 +389,5 @@ class CreateTransactionJobTest extends FeatureTestCase
         $this->assertEquals(TransactionStateCodeEnum::LOCAL_UNPROCESSED, $targetTransaction->state_code);
         $this->assertEquals($debitAccount->account_number, $targetTransaction->debit_account);
         $this->assertSame($transaction->getReferenceForHumans(), $targetTransaction->reference);
-        // TODO: more accertions
     }
 }

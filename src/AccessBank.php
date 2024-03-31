@@ -26,6 +26,13 @@ final class AccessBank
     public static $processingItemModel = 'App\\Models\\ProcessingItem';
 
     /**
+     * The default Bank model class name.
+     *
+     * @var string
+     */
+    public static $bankModel = 'App\\Models\\Bank';
+
+    /**
      * Configure AccessBank to not register its migrations.
      *
      * @return static
@@ -57,5 +64,16 @@ final class AccessBank
     public static function useProcessingItemModel($processingItemModel)
     {
         static::$processingItemModel = $processingItemModel;
+    }
+
+    /**
+     * Set the Bank model class name.
+     *
+     * @param  string  $bankModel
+     * @return void
+     */
+    public static function useBankModel($bankModel)
+    {
+        static::$bankModel = $bankModel;
     }
 }

@@ -2,12 +2,15 @@
 
 namespace GloCurrency\AccessBank\Exceptions;
 
+use Illuminate\Database\Eloquent\Model;
 use GloCurrency\MiddlewareBlocks\Enums\ProcessingItemStateCodeEnum as MProcessingItemStateCodeEnum;
 use GloCurrency\MiddlewareBlocks\Contracts\TransactionInterface as MTransactionInterface;
 use GloCurrency\MiddlewareBlocks\Contracts\RecipientInterface as MRecipientInterface;
 use GloCurrency\MiddlewareBlocks\Contracts\ProcessingItemInterface as MProcessingItemInterface;
 use GloCurrency\AccessBank\Models\Transaction;
 use GloCurrency\AccessBank\Models\DebitAccount;
+use GloCurrency\AccessBank\Models\Bank;
+use GloCurrency\AccessBank\AccessBank;
 
 final class CreateTransactionException extends \RuntimeException
 {
@@ -51,6 +54,21 @@ final class CreateTransactionException extends \RuntimeException
         $className = $transaction::class;
         $message = "{$className} `{$transaction->getId()}` recipient not found";
         return new static(MProcessingItemStateCodeEnum::NO_TRANSACTION_RECIPIENT, $message);
+    }
+
+    public static function noDestinationBank(string $countryCode, string $bankCode): self
+    {
+        $className = AccessBank::$bankModel;
+        $message = "{$className} for {$countryCode}/{$bankCode} not found";
+        return new static(MProcessingItemStateCodeEnum::NO_BANK, $message);
+    }
+
+    public static function noTargetBank(Model $bank): self
+    {
+        $sourceClassName = $bank::class;
+        $targetClassName = Bank::class;
+        $message = "{$targetClassName} for {$sourceClassName} `{$bank->getKey()}` not found";
+        return new static(MProcessingItemStateCodeEnum::NO_TARGET_BANK_CODE, $message);
     }
 
     public static function typeNotAllowed(MTransactionInterface $transaction): self
