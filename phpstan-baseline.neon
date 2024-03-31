@@ -6,6 +6,16 @@ parameters:
 			path: src/Console/FetchTransactionsUpdateCommand.php
 
 		-
+			message: "#^Part \\$bank\\-\\>getKey\\(\\) \\(mixed\\) of encapsed string cannot be cast to string\\.$#"
+			count: 1
+			path: src/Exceptions/CreateTransactionException.php
+
+		-
+			message: "#^Call to an undefined static method GloCurrency\\\\AccessBank\\\\Models\\\\Bank\\:\\:firstWhere\\(\\)\\.$#"
+			count: 1
+			path: src/Jobs/CreateTransactionJob.php
+
+		-
 			message: "#^Call to an undefined static method GloCurrency\\\\AccessBank\\\\Models\\\\DebitAccount\\:\\:firstWhere\\(\\)\\.$#"
 			count: 1
 			path: src/Jobs/CreateTransactionJob.php
