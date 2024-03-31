@@ -12,8 +12,7 @@
                 "calebporzio.better-phpunit",
                 "EditorConfig.EditorConfig",
                 "neilbrayfield.php-docblocker",
-                "MehediDracula.php-namespace-resolver",
-                "GitHub.copilot"
+                "MehediDracula.php-namespace-resolver"
             ]
         }
     }
