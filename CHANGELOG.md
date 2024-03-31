@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://www.github.com/glocurrency/access-bank-service/compare/v0.4.0...v0.5.0) (2024-03-31)
+
+
+### Features
+
+* domestic ([379270c](https://www.github.com/glocurrency/access-bank-service/commit/379270ccb0451efe22bb72e9b3789646e047e42f))
+
 ## [0.4.0](https://www.github.com/glocurrency/access-bank-service/compare/v0.3.3...v0.4.0) (2024-03-31)
 
 
