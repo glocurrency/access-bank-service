@@ -29,6 +29,7 @@ class AccessBankServiceProvider extends ServiceProvider
     {
         $this->configure();
         $this->bindConfig();
+        $this->registerCommands();
     }
 
     /**
